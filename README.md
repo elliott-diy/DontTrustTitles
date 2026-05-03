@@ -2,6 +2,8 @@
 
 Quick POC after seeing a post about games detecting Discord group chat names.
 
+This isn’t anything new, just something I spun up for my own testing and figured I’d share.
+
 I wanted to see if they also check browser tab titles. Turns out they do!
 
 
