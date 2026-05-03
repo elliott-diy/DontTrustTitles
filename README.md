@@ -2,94 +2,87 @@
 
 Quick POC after seeing a post about games detecting Discord group chat names.
 
-This isn’t anything new, just something I spun up for my own testing and figured I’d share.
+This isn’t new, I just spun this up for my own testing and figured I’d share it.
 
-I wanted to see if they also check browser tab titles. Turns out they do!
+I wanted to see if browser tab titles get checked too. They do.
 
-
-
-Some games (like Fortnite) will immediately kick you just for having a tab open in the background with certain titles. 
+Some games (like Fortnite) will immediately kick you just for having a tab open in the background with certain titles.
 
 ---
 
 ## What this does
 
-This page just repeatedly changes `document.title` to known debugger / reverse engineering tool names like:
+This page just repeatedly changes `document.title` to common debugger / reverse engineering tool names like:
 
 * x64dbg
 * Cheat Engine
 * IDA
 * Ghidra
 
-You can also input your own values if you want to test other debuggers or game cheats.
+You can also put in your own values if you want to test other tools.
 
 ---
 
 ## How this actually works
 
-Games like Fortnite run anti-cheat checks that scan for known tools (debuggers, cheat engines, etc.) running on your system.
+Games like Fortnite run anti-cheat checks looking for known tools (debuggers, cheat engines, etc.) on your system.
 
-A simple version of what they appear to be doing:
+At a basic level they seem to:
 
 * Enumerate open windows / processes
 * Read window titles
-* Match against a list of flagged keywords
+* Match against flagged keywords
 
-Browsers expose tab titles as part of the window title:
+Browsers include the tab title in the window title:
 
 ```
 <tab title> - Mozilla Firefox
 <tab title> - Google Chrome
 ```
 
-So when this page does:
+So when this page runs:
 
 ```
 document.title = "x64dbg"
 ```
 
-Your system now has a window title like:
+Your system ends up with a window title like:
 
 ```
 x64dbg - Mozilla Firefox
 ```
 
-From the game’s perspective, this looks like a debugger window.
+From the game’s point of view, that looks like a debugger.
 
 So:
 
-* The anti-cheat sees a flagged string
-* Assumes a tool is running
-* Kicks you (or bans you, depending on the game and program)
+* It sees a flagged string
+* Assumes something is running
+* Kicks you (or worse, depending on the game)
 
 Even if:
 
 * The tab is in the background
-* You never interacted with it
+* You never touched it
 * The tool isn’t installed
-
-What could go wrong!
 
 ---
 
 ## Demo
 
-If you want to try this out I have put up a demo. This could lead to your accounts getting banned so please try it at your own risk!
+Try it here:
+[https://research.elliott.diy/fea9d209](https://research.elliott.diy/fea9d209)
 
-Try it here: https://research.elliott.diy/fea9d209
-
-Open it, hit start, then launch a game and see what happens.
+Open it, hit start, then launch a game.
 
 ---
 
 ## Affected games
 
 | Game     | Kick | Ban | App    |
-|----------|------|-----|--------|
+| -------- | ---- | --- | ------ |
 | Fortnite | Yes  | No  | x64dbg |
 |          |      |     |        |
 
-Send a PR if you find a new game that hates browser tabs.
-
----
+Send a PR if you find more games that hate browser tabs.
 
