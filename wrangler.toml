@@ -1,0 +1,9 @@
+name = "dont-trust-titles"
+main = "src/worker.js"
+compatibility_date = "2026-05-03"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = true

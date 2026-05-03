@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DontTrustTitles</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #f9f9f9;
+            color: #222;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .subtext {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        img {
+            max-width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin: 20px auto;
+            display: block;
+        }
+
+        button {
+            background: #0077cc;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #005fa3;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .controls {
+            margin-top: 15px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #444;
+        }
+
+        .footer {
+            font-size: 13px;
+            color: #555;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>DontTrustTitles</h1>
+<p class="subtext">
+    Speedrun getting banned in games with awful anti debug detection by changing <code>document.title</code> to known debuggers.
+</p>
+
+<img src="https://i.imgur.com/bVDgicu.gif" alt="Seal">
+
+<div class="controls">
+    <button onclick="start()">Start</button>
+    <button onclick="stop()">Stop</button>
+</div>
+
+<div class="controls row">
+    <input id="names" placeholder="x64dbg, Cheat Engine, ida (or single value)" style="width:300px;">
+    <input id="speed" type="number" value="150" min="20" step="10" style="width:90px;">
+</div>
+
+<div class="status" id="status">
+    Idle
+</div>
+
+<script>
+    const status = document.getElementById('status');
+
+    let running = false;
+    let intervalId = null;
+    let index = 0;
+
+    const preset = [
+        'x64dbg',
+        'Cheat Engine',
+        'IDA',
+        'Ghidra',
+        'OllyDbg'
+    ];
+
+    let active = [...preset];
+
+    function getSpeed() {
+        const val = parseInt(document.getElementById('speed').value);
+        return (!isNaN(val) && val >= 20) ? val : 150;
+    }
+
+    function setTitle(name) {
+        document.title = name;
+        status.textContent = "Running: " + name;
+    }
+
+    function parseInput() {
+        const raw = document.getElementById('names').value;
+        if (!raw.trim()) return preset;
+
+        return raw
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+    }
+
+    function start() {
+        if (running) return;
+
+        active = parseInput();
+        index = 0;
+        running = true;
+
+        intervalId = setInterval(loop, getSpeed());
+    }
+
+    function stop() {
+        if (!running) return;
+
+        clearInterval(intervalId);
+        running = false;
+
+        document.title = "Normal Page";
+        status.textContent = "Stopped";
+    }
+
+    function loop() {
+        setTitle(active[index % active.length]);
+        index++;
+    }
+
+    document.getElementById('speed').addEventListener('input', () => {
+        if (running) {
+            clearInterval(intervalId);
+            intervalId = setInterval(loop, getSpeed());
+        }
+    });
+</script>
+
+<div class="footer">
+    Showing how trusting window titles for debugger detection can be abused by a webpage.<br>
+    <a href="https://elliott.diy" target="_blank">elliott.diy</a> &bull;
+    <a href="https://github.com/elliott-diy/DontTrustTitles" target="_blank">GitHub</a>
+</div>
+
+</body>
+</html>
