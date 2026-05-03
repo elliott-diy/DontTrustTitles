@@ -4,7 +4,7 @@ Quick POC after seeing a post about games detecting Discord group chat names.
 
 This isn’t new, I just spun this up for my own testing and figured I’d share it.
 
-I wanted to see if browser tab titles get checked too. They do.
+I wanted to see if browser tab titles get checked too and turns out they do!
 
 Some games (like Fortnite) will immediately kick you just for having a tab open in the background with certain titles.
 
